@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <style>
+        #outer {
+            width: 300px;
+            height: 200px;
+            border: #ddd solid 1px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<script src="../src/SugarWorker.js"></script>
+
+<body>
+    <div id="outer"></div>
+</body>
+<script>
+    //    var countWorker = new Worker('core/countWorker.js');
+    //    countWorker.onmessage = function (e) {
+    //        document.getElementById('outer').innerHTML = e.data;
+    //        console.log(e);
+    //    };
+    //    countWorker.onerror = function (e) {
+    //        console.error(e);
+    //    };
+    //    countWorker.postMessage({
+    //        a: 1500000000
+    //    });
+    work('core/countWorker.js')
+        .back(function (e) {
+            document.getElementById('outer').innerHTML = e.data;
+            console.log(e);
+            e.end();
+        })
+        .err(function (e) {
+            console.error(e)
+        })
+        .post({
+            a: 1500000000
+        });
+</script>
+
+</html>
