@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>moduleTest</title>
+    <style>
+        #outer {
+            width: 300px;
+            height: 200px;
+            border: #ddd solid 1px;
+            padding: 10px;
+        }
+    </style>
+    <script src="br.js"></script>
+</head>
+
+<body>
+
+    <div id="outer"></div>
+</body>
+<script>
+    require("../src/SugarWorker").ready = function (work) {
+        work('core/countWorker.js')
+            .back(function (e) {
+                document.getElementById('outer').innerHTML = e.data;
+                console.log(e);
+                e.end();
+            })
+            .err(function (e) {
+                console.error(e)
+            })
+            .post({
+                a: 1500000000
+            });
+    };
+</script>
+
+</html>

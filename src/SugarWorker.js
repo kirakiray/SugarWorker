@@ -66,5 +66,17 @@
     };
 
     //init
-    Global.work = work;
+    if (Global.define && Global.define.br) {
+        //BrowserRequire Module
+        Global.define(function () {
+            return work;
+        }, 'sugarWork');
+    } else if (typeof define === "function" && define.amd) {
+        //AMD
+        define("sugarWork", [], function () {
+            return work;
+        });
+    } else {
+        Global.work = work;
+    }
 })(window);
