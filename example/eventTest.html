@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <style>
+        #outer {
+            width: 300px;
+            height: 200px;
+            border: #ddd solid 1px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<script src="../src/SugarWorker.js"></script>
+
+<body>
+    <div id="outer"></div>
+</body>
+<script>
+    work('core/eventExampleWorker.js')
+        .back(function (e) {
+            document.getElementById('outer').innerHTML = e.data;
+            console.log(e);
+            e.end();
+        })
+        .err(function (e) {
+            console.error(e)
+        })
+        .post({
+            a: 1500000000
+        })
+        .set('haha', function (e) {
+            console.log(e);
+        });
+</script>
+
+</html>

@@ -16,24 +16,47 @@
 
     //SugarWorker
     function SugarWorker(workerUrl) {
+        var _this = this;
         //保存Worker实例
-        this.worker = new Worker(workerUrl);
+        var worker = new Worker(workerUrl);
+        this.worker = worker;
+        //保存eventList
+        var eventList = {};
+        this.eventList = eventList;
+        //worker响应
+        worker.onmessage = function (e) {
+            var sugarWorkerEvent = new SugarWorkerEvent(_this, e);
+            var eventType = e.data.eventType;
+            if (eventType) {
+                if (eventList[eventType]) {
+                    //重设event
+                    sugarWorkerEvent.data = e.data.data;
+                    sugarWorkerEvent.type = e.data.eventType;
+                    eventList[eventType](sugarWorkerEvent);
+                }
+            } else {
+                sugarWorkerEvent.type = e.type;
+                _this.message(sugarWorkerEvent);
+            }
+        };
     }
     SugarWorker.prototype.back = function (readyFun) {
-        var _this = this;
         //设置响应
-        this.worker.onmessage = function (e) {
-            var sugarWorkerEvent = new SugarWorkerEvent(_this, e);
-            readyFun(sugarWorkerEvent);
-        };
+        this.message = readyFun;
         return this;
     }
+    //postMessage
     SugarWorker.prototype.post = function (data) {
         this.worker.postMessage(data);
         return this;
     }
+    //onerror
     SugarWorker.prototype.err = function (errFun) {
         this.worker.onerror = errFun;
+        return this;
+    }
+    SugarWorker.prototype.set = function (eventType, eveFun) {
+        this.eventList[eventType] = eveFun;
         return this;
     }
 
